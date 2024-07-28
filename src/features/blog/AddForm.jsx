@@ -7,14 +7,68 @@ import {
   Typography,
   Textarea,
   Radio,
+  Select,
+  Option,
+  Rating,
 } from "@material-tailwind/react";
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { nanoid } from '@reduxjs/toolkit';
+import { useDispatch } from 'react-redux';
+import { addToBlog } from './blogSlice';
+import { useNavigate } from 'react-router';
+
+//import * as Nei from '../../Sample';
+
+// console.log(Nei.persons);
+
+const radioData = [
+  { value: 'news', color: 'red', label: 'News' },
+  { value: 'travel', color: 'green', label: 'Travel' },
+];
+const checkBoxData = [
+  { color: 'red', value: 'red', label: 'Red' },
+  { color: 'blue', value: 'blue', label: 'Blue' },
+  { color: 'green', value: 'green', label: 'Green' },
+];
+
+
 
 
 const AddForm = () => {
 
-  // checkbox file select
+  const dispatch = useDispatch();
+
+  const nav = useNavigate();
+
+  const blogSchema = Yup.object({
+    title: Yup.string().min(5).max(100).required(),
+    author: Yup.string().required(),
+    blogType: Yup.string().required(),
+    someEx: Yup.array().min(1).required(),
+    country: Yup.string().required(),
+    rating: Yup.number().required(),
+    description: Yup.string().min(10).max(200).required()
+  });
+  const { handleChange, handleSubmit, values, errors, setFieldValue, touched } = useFormik({
+    initialValues: {
+      title: '',
+      author: '',
+      blogType: '',
+      someEx: [],
+      country: '',
+      rating: null,
+      description: ''
+    },
+    onSubmit: (val, { resetForm }) => {
+      dispatch(addToBlog({ ...val, id: nanoid() }));
+      nav(-1);
+    },
+    // validationSchema: blogSchema
+  });
+
   return (
-    <div className='p-7 mx-auto max-w-lg'>
+    <div className='px-7 pt-3  max-w-lg'>
       <Card color="transparent" shadow={false}>
         <Typography variant="h4" color="blue-gray">
           Add Blog
@@ -23,45 +77,102 @@ const AddForm = () => {
           Enter Blog details
         </Typography>
 
-        <form className="mt-7 mb-2 ">
+        <form onSubmit={handleSubmit} className="mt-4 mb-2 ">
           <div className="mb-1 flex flex-col gap-6">
-            <Input
-              size="lg"
-              label='Blog Title'
-            />
-            <Input
-              size="lg"
-              label='Author'
-            />
 
 
+            <div>
+              <Input
+                name='title'
+                onChange={handleChange}
+                value={values.title}
+                size="lg"
+                label='Blog Title'
+              />
+              {errors.title && touched.title && <h1 className='text-red-600'>{errors.title}</h1>}
+            </div>
+
+            <div>
+              <Input
+                size="lg"
+                name='author'
+                onChange={handleChange}
+                value={values.author}
+                label='Author'
+              />
+              {errors.author && touched.author && <h1 className='text-red-600'>{errors.author}</h1>}
+            </div>
 
             <div className="type">
               <Typography>Blog Type</Typography>
 
               <div className="flex gap-10">
-
-                <Radio name="type" label="News" />
-                <Radio
-                  color='green'
-                  name="type"
-                  label="Travel"
-                  defaultChecked />
+                {radioData.map((rad, i) => {
+                  return <Radio
+                    key={i}
+                    color={rad.color}
+                    name='blogType'
+                    onChange={handleChange}
+                    value={rad.value}
+                    label={rad.label}
+                  />;
+                })}
               </div>
+              {errors.blogType && touched.blogType && <h1 className='text-red-600'>{errors.blogType}</h1>}
+            </div>
+
+            <div className="ch">
+              <Typography>Some Example</Typography>
+              <div className="flex w-max gap-4">
+                {checkBoxData.map((check, i) => {
+                  return <Checkbox
+                    key={i}
+                    name='someEx'
+                    onChange={handleChange}
+                    color={check.color}
+                    value={check.value}
+                    label={check.label} />
+                })}
+
+              </div>
+              {errors.someEx && touched.someEx && <h1 className='text-red-600'>{errors.someEx}</h1>}
             </div>
 
 
+            <div className="w-72">
+              <Select onChange={(e) => setFieldValue('country', e)} label="Select Country">
+                <Option value='nepal'>Nepal</Option>
+                <Option value='india'>India</Option>
+                <Option value='china'>China</Option>
 
+              </Select>
+              {errors.country && touched.country && <h1 className='text-red-600'>{errors.country}</h1>}
+            </div>
 
             <div>
-              <Textarea label="Description" />
+              <Typography>Rating</Typography>
+              <Rating onChange={(e) => setFieldValue('rating', e)} />
+              {errors.rating && touched.rating && <h1 className='text-red-600'>{errors.rating}</h1>}
             </div>
+
+            <div>
+              <Textarea
+                name='description'
+                value={values.description}
+                onChange={handleChange}
+                label="Description" />
+              {errors.description && touched.description && <h1 className='text-red-600'>{errors.description}</h1>}
+            </div>
+
+            {/* <div>
+              <Input type='file' label='select image' />
+            </div> */}
 
 
 
           </div>
 
-          <Button className="mt-6" fullWidth>
+          <Button type='submit' className="mt-6" fullWidth>
             Submit
           </Button>
 
