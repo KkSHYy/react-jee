@@ -36,7 +36,7 @@ const Header = () => {
 
 
       <nav className='sm:hidden'>
-        <NavLink to='/add-blog'>Login</NavLink>
+        <NavLink to='/login'>Login</NavLink>
       </nav>
 
 
