@@ -5,11 +5,43 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { useNavigate } from "react-router";
+import * as Yup from 'yup';
+import { useFormik } from 'formik';
+import { toast } from "react-toastify";
+import { useRegisterUserMutation } from "./userApi";
 
+const registerSchema = Yup.object({
+  fullname:Yup.string().required(),
+  email: Yup.string().email().required(),
+  password: Yup.string().required(),
+});
 
 const Register = () => {
 
+  const [signupUser, {isLoading}] = useRegisterUserMutation();
+
   const nav = useNavigate();
+
+  const {values,errors, handleSubmit,handleChange, touched} = 
+  useFormik({
+    initialValues: {
+      fullname:'',
+      email: '',
+      password: '',
+      },
+
+      onSubmit: async(val) => {
+     try 
+     {
+      const response = await signupUser(val).unwrap();
+      toast.success(' Signed up completed !!');
+      nav(-1);
+     } catch (err) {
+      toast.error(err.data?.message);
+     }
+      },
+      validationSchema:registerSchema
+  }) 
 
   return (
     <div className="p-4 w-80 max-w-screen-lg sm:w-96">  
@@ -18,47 +50,45 @@ const Register = () => {
         Sign Up
       </Typography>
     
-      <form className="mt-5 mb-2">
+      <form className="mt-5 mb-2" onSubmit={handleSubmit}>
         <div className="mb-1 flex flex-col gap-6">
-          <Typography variant="h6" color="blue-gray" className="-mb-3">
-            Your Name
-          </Typography>
           <Input
+            name="fullname"
+            type="fullname"
+            label="Full Name"
             size="lg"
-            placeholder="name@mail.com"
-            className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
+            value={values.fullname}
+            onChange={handleChange}
           />
-          <Typography variant="h6" color="blue-gray" className="-mb-3">
-            Your Email
-          </Typography>
+            {errors.fullname && touched.fullname && <h1 className='text-red-600'>{errors.fullname}</h1>}
+
           <Input
+            name="email"
+            type="email"
+            label="Email"
             size="lg"
+            value={values.email}
             placeholder="name@mail.com"
-            className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
+            onChange={handleChange}
           />
-          <Typography variant="h6" color="blue-gray" className="-mb-3">
-            Password
-          </Typography>
+            {errors.email && touched.email && <h1 className='text-red-600'>{errors.email}</h1>}
+
           <Input
             type="password"
+            name="password"
+            label="Password"
             size="lg"
+            value={values.password}
+            onChange={handleChange}
             placeholder="********"
-            className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-            labelProps={{
-              className: "before:content-none after:content-none",
-            }}
           />
+            {errors.password && touched.password && <h1 className='text-red-600'>{errors.password}</h1>}
         </div>
       
-        <Button className="mt-6" fullWidth>
-          sign up
+        <Button loading={isLoading} type="submit" className="mt-6" fullWidth>
+          Sign up
         </Button>
+
         <Typography color="gray" className="mt-4 text-center font-normal">
          Already have an account?{" "}
           <button type="button" onClick={() => nav(-1)} className="font-medium text-gray-900">

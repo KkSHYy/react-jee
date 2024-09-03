@@ -11,14 +11,6 @@ const App = () => {
   const {isError, isFetching, isLoading, data, error} = useGetAllProductsQuery();
   
 
-  // const retObj = () => {
-  //   return {
-  //     name: 'hello'
-  //   };
-  // }
-
-  // const n = retObj();
-  // console.log(n);
 
   const router = createBrowserRouter([
     {
