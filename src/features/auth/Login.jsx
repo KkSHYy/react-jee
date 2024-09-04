@@ -38,6 +38,7 @@ const Login = () => {
       const response = await loginUser(val).unwrap();
      dispatch(addUser(response));
       toast.success('Successfully logged in !!');
+      nav(-1);
      } catch (err) {
       toast.error(err.data?.message);
      }
