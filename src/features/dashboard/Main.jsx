@@ -1,18 +1,22 @@
-import React from 'react'
-import { useLoginUserMutation } from '../auth/userApi';
+import React from 'react';
+import { useGetAllProductsQuery } from '../product/productApi';
+import ProductCard from '../product/ProductCard'
 
 const Main = () => {
 
-//   const {isError, isFetching, isLoading, data} = useGetMealByCategoryQuery('beef');
+ const {isLoading, error, data} = useGetAllProductsQuery();
 
-//  console.log(data);
+ if(isLoading)
+  return <h1>Loading......</h1>
 
-//  const sd = useLoginUserMutation();
-//  console.log(sd);
- 
+
   return (
-    <div>
+    <div className='p-4 grid grid-cols-3 gap-6'>
     
+    {data && data.map((product) => {
+    return <ProductCard key={product._id} product={product}/>
+    })}
+
     </div>
   )
 }

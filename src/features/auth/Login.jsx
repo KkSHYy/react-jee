@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { addUser } from "./userSlice";
 
-const loginSchema = Yup.object({
+ export const loginSchema = Yup.object({
   email: Yup.string().email().required(),
   password: Yup.string().required(),
 });
@@ -33,18 +33,16 @@ const Login = () => {
       },
 
       onSubmit: async(val) => {
-     try 
-     {
+     try  {
       const response = await loginUser(val).unwrap();
      dispatch(addUser(response));
       toast.success('Successfully logged in !!');
       nav(-1);
      } catch (err) {
       toast.error(err.data?.message);
-     }
-      },
+     }},
       validationSchema:loginSchema
-  }) 
+  }) ;
 
   return (
     <div className="p-4 w-80 max-w-screen-lg sm:w-96">  

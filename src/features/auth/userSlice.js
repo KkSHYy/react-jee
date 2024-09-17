@@ -1,6 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getUserFromLocal, setUser, removeUserFromLocal } from "../../hooks/localStorage";
 
+
+console.log('Action:', setUser({isAdmin: true }));
+
 export const userSlice = createSlice({
   name:'userSlice',
   initialState: {

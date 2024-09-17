@@ -24,9 +24,22 @@ registerUser: builder.mutation({
   })
 }),
 
+updateProfile: builder.mutation({
+  query: (q) => ({
+    url: `/${q.id}`,
+    body: {
+      email: q.email,
+      fullname: q.fullname
+    },
+    headers: {
+      Authorization: q.token
+    },
+    method: 'PATCH',
+  })
+}),
 
 })
 
 });
 
-export const {useLoginUserMutation, useRegisterUserMutation} = userApi;
+export const {useLoginUserMutation, useRegisterUserMutation,useUpdateProfileMutation} = userApi;

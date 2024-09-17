@@ -14,7 +14,6 @@ import {
   ChevronDownIcon,
   PowerIcon,
   ShoppingBagIcon
-
 } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
@@ -27,15 +26,12 @@ const userMenu = [
     icon: UserCircleIcon,
     value: 'profile'
   },
-
-
   {
     label: "Sign Out",
     icon: PowerIcon,
     value: 'exist'
   },
 ];
-
 
 const adminMenu = [
   {
@@ -48,16 +44,12 @@ const adminMenu = [
     icon: ShoppingBagIcon,
     value: 'products'
   },
-
-
   {
     label: "Sign Out",
     icon: PowerIcon,
     value: 'exist'
   },
-];
-
-
+]; 
 
 const Header = () => {
 
@@ -69,6 +61,7 @@ const Header = () => {
   const closeMenu = () => setIsMenuOpen(false);
   const menu = user?.isAdmin ? adminMenu : userMenu;
 
+  console.log('isAdmin property:', user?.isAdmin);
 
   return (
     <Navbar className="mx-auto max-w-screen-xl p-2 lg:rounded-full lg:pl-6">
@@ -81,8 +74,7 @@ const Header = () => {
           Material Tailwind
         </Typography>
 
-
-
+    
         {user === null ? <Button onClick={() => nav('/login')} size="sm" variant="text">
           <span>Log In</span>
         </Button> :
@@ -91,7 +83,6 @@ const Header = () => {
             <MenuHandler>
               <Button
                 variant="text"
-
                 className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 lg:ml-auto"
               >
                 <Avatar
@@ -119,11 +110,13 @@ const Header = () => {
                         case 'exist':
                           dispatch(removeUser());
                           break;
-                        case 'products':
+                          case 'products':
                           nav('/product-admin')
                           break;
                         case 'profile':
                           nav('/user-profile')
+                          break;
+                          default:
                           break;
                       }
                       closeMenu();
@@ -156,6 +149,7 @@ const Header = () => {
 
     </Navbar>
   );
+
 }
 
 export default Header
